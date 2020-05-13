@@ -2,12 +2,19 @@
 // nix
 
 void showMenue();
+
 void startUI();
+
 int minimum();
+
 void fillArrayRandom(int arr[100], int arraySize);
+
 int maximum();
+
 int median();
+
 void printArray();
+
 void sortArray(int pInt[100], const int arraySize);
 
 int range();
@@ -16,9 +23,11 @@ double meanDeviation();
 
 double average();
 
+int mostCommonValues();
+
 using namespace std;
 
-const int arraySize = 100;
+const int arraySize = 30;
 int seriesOfMeasurements[arraySize];
 
 int main() {
@@ -30,7 +39,7 @@ int main() {
 void fillArrayRandom(int arr[100], int arraySize) {
     srand((unsigned) time(NULL));
     for (int i = 0; i < arraySize; ++i) {
-        arr[i] = rand() % 1000 + 1;
+        arr[i] = rand() % 10 + 1;
     }
 }
 
@@ -58,16 +67,65 @@ void startUI() {
                 cout << "Die mittlere Abweichung ist " << meanDeviation() << endl;
                 break;
             case 6:
+                cout << "Die 5 haeufigsten Werte sind: " << endl;
+                mostCommonValues();
+                break;
 
         }
         printArray();
     }
 }
 
+int mostCommonValues() {
+    int values[arraySize][2];
+    for (int l = 0; l < arraySize; ++l) {
+        values[l][0] = 0;
+        values[l][1] = 0;
+    }
+    sortArray(seriesOfMeasurements, arraySize);
+    int count = 1;
+    int lastValue = seriesOfMeasurements[0];
+    int j = 0;
+    for (int i = 1; i < arraySize; ++i) {
+        if (lastValue == seriesOfMeasurements[i]) {
+            count++;
+            if (i == arraySize - 1) {
+                values[j][0] = lastValue;
+                values[j][1] = count;
+            }
+        } else {
+            values[j][0] = lastValue;
+            values[j][1] = count;
+            j++;
+            count = 1;
+        }
+        lastValue = seriesOfMeasurements[i];
+    }
+    // sort
+    for (int i = 0; i < arraySize; i++) {
+        int maxIndex = i;
+        for (int j = i; j < arraySize; j++) {
+            if (values[j][1] > values[maxIndex][1]) {
+                maxIndex = j;
+            }
+        }
+        int temp0 = values[i][0];
+        int temp1 = values[i][1];
+        values[i][0] = values[maxIndex][0];
+        values[i][1] = values[maxIndex][1];
+        values[maxIndex][0] = temp0;
+        values[maxIndex][1] = temp1;
+    }
+    for (int k = 0; k < 5; ++k) {
+        cout << "Die Zahl " << values[k][0] << " kommt " << values[k][1] << " mal vor." << endl;
+    }
+    return 0;
+}
+
 double meanDeviation() {
     int avrg = average();
     int sum = 0;
-    for (int i = 0; i < arraySize; ++i) {
+    for (int i = 0; i < arraySize; i++) {
         sum += abs(seriesOfMeasurements[i] - avrg);
     }
     return sum / arraySize;
@@ -97,10 +155,10 @@ void printArray() {
     cout << endl;
 }
 
-void sortArray(int arr[100], const int arraySize) {
-    for (int i = 0; i < arraySize - 1; ++i) {
-        int minIndex = 0;
-        for (int j = i; j < arraySize; ++j) {
+void sortArray(int arr[arraySize], const int arraySize) {
+    for (int i = 0; i < arraySize ; ++i) {
+        int minIndex = i;
+        for (int j = i + 1; j < arraySize; ++j) {
             if (arr[j] < arr[minIndex]) {
                 minIndex = j;
             }
